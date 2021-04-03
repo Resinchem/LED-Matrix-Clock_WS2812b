@@ -11,7 +11,7 @@ Updated version of the original 3D LED Clock, countdown timer, scoreboard and ne
 * User controllable colors for all display modes
 * Text display supports almost all ASCII characters from 32-122 (except for a couple reserved characters)
 * Text display effects, including flash, flash alternate, fade in/out, appear/appear flash and rainbow
-* Control via over 30 MQTT commands, local buttons or built-in web browser
+* Control via 30+ MQTT commands, local buttons or built-in web browser
 
 (While basic functionality can be controlled via local buttons or the built-in web server, most of the advanced features including the text display mode requires a properly configured MQTT broker).
 
