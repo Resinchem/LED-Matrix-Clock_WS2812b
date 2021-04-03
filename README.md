@@ -9,7 +9,7 @@ Updated version of the original 3D LED Clock, countdown timer, scoreboard and ne
 * Temperature can display indoor or outdoor temperature (via MQTT/External service) in F or C
 * Scoreboard supports 3 character "team names" (e.g. DET, BOS, IND, - or any 3 characters you define).
 * User controllable colors for all display modes
-* Text display supports almost all ASCII characters from 32-128 (except for a couple reserved characters)
+* Text display supports almost all ASCII characters from 32-122 (except for a couple reserved characters)
 * Text display effects, including flash, flash alternate, fade in/out, and rainbow
 * Control via over 30 MQTT commands, local buttons or built-in web browser
 
