@@ -1,3 +1,3 @@
-# LED-Matrix-Clock_WS2812b
+# Matrix Clock (and more) using WS2812b LEDs
 
 Coming soon!
