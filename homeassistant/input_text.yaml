@@ -1,0 +1,35 @@
+# ==================================
+# Matrix Text Inputs
+# ==================================
+# Date/Time for setting clock time
+matrix_time_load:
+  name: Date/Time
+  initial: "MMM dd yyyy;hh:mm:ss"
+  min: 20
+  max: 20
+# Start Time for Countdown
+matrix_countdown_start_time:
+  name: Countdown Start Time
+  min: 8
+  max: 8
+  pattern: "[0-2][0-9]:[0-5][0-9]:[0-5][0-9]"
+# Tmperature Correction
+matrix_temperature_correction:
+  name: Temperature Correction
+  min: 3
+  max: 5
+  pattern: '^[\-]?\d{1,2}[\.]?[\d]{0,1}$'
+# Scoreboard Team Names
+matrix_scoreboard_team_left:
+  name: Team Name Left
+  min: 0
+  max: 3
+matrix_scoreboard_team_right:
+  name: Team Name Right
+  min: 0
+  max: 3
+# Text Message
+matrix_text_message:
+  name: Text Message
+  min: 0
+  max: 30

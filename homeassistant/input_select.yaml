@@ -1,0 +1,26 @@
+# =========================
+# Matrix Large Number Font
+# =========================
+matrix_number_font:
+  name: Matrix Number Font
+  options:
+   - '[0] - Seven Segment'
+   - '[1] - Modern'
+   - '[2] - Hybrid'
+  initial: '[1] - Modern'
+
+# =========================
+# Matrix Clock Text Effects  
+# =========================
+matrix_text_effect:
+  name: Matrix Text Effect
+  options:
+    - '[00] - None'
+    - '[01] - Flash'
+    - '[02] - Flash Alternate'
+    - '[03] - Fade In'
+    - '[04] - Fade Out'
+    - '[05] - Appear'
+    - '[06] - Appear Flash'
+    - '[07] - Rainbow'
+  initial: '[00] - None'

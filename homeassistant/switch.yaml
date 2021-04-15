@@ -1,0 +1,104 @@
+# ===================
+# Matrix Switches
+# ===================
+# Mode
+- platform: mqtt
+  name: Matrix Mode Clock
+  state_topic: "stat/matrix/mode"
+  value_template: "{{ value == 'Clock' }}"
+  command_topic: "cmnd/matrix/mode"
+  payload_on: "0"
+  #payload_off: "OFF"
+  state_on: true
+  state_off: false
+  retain: false
+- platform: mqtt
+  name: Matrix Mode Countdown
+  state_topic: "stat/matrix/mode"
+  value_template: "{{ value == 'Countdown' }}"
+  command_topic: "cmnd/matrix/mode"
+  payload_on: "1"
+  #payload_off: "OFF"
+  state_on: true
+  state_off: false
+  retain: false
+- platform: mqtt
+  name: Matrix Mode Scoreboard
+  state_topic: "stat/matrix/mode"
+  command_topic: "cmnd/matrix/mode"
+  payload_on: "2"
+  #payload_off: "OFF"
+  state_on: true
+  state_off: false
+  value_template: "{{ value == 'Scoreboard' }}"
+  retain: false
+- platform: mqtt
+  name: Matrix Mode Text
+  state_topic: "stat/matrix/mode"
+  command_topic: "cmnd/matrix/mode"
+  payload_on: "3"
+  #payload_off: "OFF"
+  state_on: true
+  state_off: false
+  value_template: "{{ value == 'Text' }}"
+  retain: false
+
+# 12/24 hour display
+- platform: mqtt
+  name: Matrix Display 12 Hour
+  state_topic: "stat/matrix/clock/display"
+  value_template: "{{ value | int == 12 }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/clock/display"
+  payload_on: "12"
+  retain: false
+- platform: mqtt
+  name: Matrix Display 24 Hour
+  state_topic: "stat/matrix/clock/display"
+  value_template: "{{ value | int == 24 }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/clock/display"
+  payload_on: "24"
+  retain: false
+  
+# Temperature C/F Display
+- platform: mqtt
+  name: Matrix Temp Display F
+  state_topic: "stat/matrix/temperature/symbol"
+  value_template: "{{ value == 'F' }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/temperature/symbol"
+  payload_on: "13"
+  retain: false
+- platform: mqtt
+  name: Matrix Temp Display C
+  state_topic: "stat/matrix/temperature/symbol"
+  value_template: "{{ value == 'C' }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/temperature/symbol"
+  payload_on: "12"
+  retain: false
+
+# Countdown Running/Stopped Status
+- platform: mqtt
+  name: Matrix Countdown Running
+  state_topic: "stat/matrix/countdown/status"
+  value_template: "{{ value == 'Running' }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/countdown/action"
+  payload_on: "0"
+  retain: false
+- platform: mqtt
+  name: Matrix Countdown Stopped
+  state_topic: "stat/matrix/countdown/status"
+  value_template: "{{ value == 'Stopped' }}"
+  state_on: true
+  state_off: false
+  command_topic: "cmnd/matrix/countdown/action"
+  payload_on: "1"
+  retain: false

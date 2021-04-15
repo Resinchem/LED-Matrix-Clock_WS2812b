@@ -1,0 +1,838 @@
+# ====================================
+# Brighness and Color Slider Processes
+#  ...Set: publishes value when slider changes
+#  ---Get: updates slider when MQTT changes
+# ====================================
+# Overall Brightness Setting
+# ---------------------------
+- alias: Matrix Brightness Set  
+  trigger: 
+    platform: state
+    entity_id: input_number.matrix_brightness
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/brightness"
+      payload: "{{ states('input_number.matrix_brightness') | int }}"
+- alias: Matrix Brightness Get  
+  trigger: 
+    platform: mqtt
+    topic: "stat/matrix/brightness"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_brightness
+      value: "{{ trigger.payload }}"
+
+# -----------------------
+# Large Number Font
+# -----------------------
+- alias: Matrix Number Font Set
+  trigger:
+    platform: state
+    entity_id: input_select.matrix_number_font
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/font"
+      payload: >
+        {% set num = states('input_select.matrix_number_font') %}
+        {{ num[1:2] | int }}	 
+- alias: Matrix Number Font Get
+  trigger: 
+    platform: mqtt
+    topic: "stat/matrix/font"
+  action:
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.matrix_number_font
+      data_template:
+        option: >
+          {% if trigger.payload.strip() == '0' %}
+            [0] - Seven Segment
+          {% elif trigger.payload.strip() == '1' %}
+            [1] - Modern
+          {% elif trigger.payload.strip() == '2' %}
+            [2] - Hybrid
+          {% endif %}
+
+# -----------------------
+# Auto-Dimming
+# -----------------------
+- alias: Matrix Auto Dim On
+  trigger:
+    platform: state
+    entity_id: input_boolean.matrix_auto_dim
+    from: "off"
+    to: "on"
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/brightness"
+        payload: >
+          {% if is_state('light.basement', 'on') %}
+            {{ (((state_attr('light.basement', 'brightness')) | default(0)) / 5) | int + 5 }}
+          {% else %}
+            5
+          {% endif %}
+
+- alias: Matrix Auto Dim Update
+  trigger:
+    - platform: state
+      entity_id: light.basement
+      attribute: brightness
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.matrix_auto_dim
+        state: "on"
+      - condition: state
+        entity_id: light.basement
+        state: "on"
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/brightness"
+      payload: "{{ (((state_attr('light.basement', 'brightness')) | default(0)) / 5) | int + 5 }}"
+
+- alias: Matrix Auto Dim Light Off
+  trigger:
+    platform: state
+    entity_id: light.basement
+    from: "on"
+    to: "off"
+  condition: 
+    condition: state
+    entity_id: input_boolean.matrix_auto_dim
+    state: "on"
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/brightness"
+      payload: "5"
+
+# -----------------------
+# Countdown Start Time
+# -----------------------
+- alias: Matrix Countdown Start Set
+  trigger:
+    platform: state
+    entity_id: input_text.matrix_countdown_start_time
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/countdown/starttime"
+      payload: "{{ states('input_text.matrix_countdown_start_time') }}"
+- alias: Matrix Countdown Start Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/starttime"
+  action:
+    service: input_text.set_value
+    data:
+      entity_id: input_text.matrix_countdown_start_time
+      value: "{{ trigger.payload }}"
+# ----------------------
+# Scoreboard Team Names
+# ----------------------
+- alias: Matrix Scoreboard Team Left Set
+  trigger:
+    platform: state
+    entity_id: input_text.matrix_scoreboard_team_left
+  action: 
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/scoreboard/teamleft"
+      payload: "{{ states('input_text.matrix_scoreboard_team_left') }}"
+- alias: Matrix Scoreboard Team Left Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/teamleft"
+  action: 
+    service: input_text.set_value
+    data:
+      entity_id: input_text.matrix_scoreboard_team_left
+      value: "{{ trigger.payload }}"
+- alias: Matrix Scoreboard Team Right Set
+  trigger: 
+    platform: state
+    entity_id: input_text.matrix_scoreboard_team_right
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/scoreboard/teamright"
+      payload: "{{ states('input_text.matrix_scoreboard_team_right') }}"
+- alias: Matrix Scoreboard Team Right Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/teamright"
+  action:
+    service: input_text.set_value
+    data:
+      entity_id: input_text.matrix_scorebard_team_right
+      value: "{{ trigger.payload }}"
+# ----------------------
+# Temperature Correction
+# ----------------------
+- alias: Matrix Temp Correction Set
+  trigger:
+    platform: state
+    entity_id: input_text.matrix_temperature_correction
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/temperature/correction"
+      payload: "{{ states('input_text.matrix_temperature_correction') }}"
+- alias: Matrix Temp Correction Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/temperature/correction"
+  action:
+    service: input_text.set_value
+    data:
+      entity_id: input_text.matrix_temperature_correction
+      value: "{{ trigger.payload }}"
+
+# ----------------------------
+# Text Message, Effect & Speed
+# ----------------------------
+# Message
+- alias: Matrix Text Set
+  trigger:
+    platform: state
+    entity_id: input_text.matrix_text_message
+  action: 
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/text/message"
+      payload: "{{ states('input_text.matrix_text_message') }}"
+- alias: Matrix Text Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/message"
+  action:
+    service: input_text.set_value
+    data:
+      entity_id: input_text.matrix_text_message
+      value: "{{ trigger.payload }}"
+# Effect
+- alias: Matrix Text Effect Set
+  trigger:
+    platform: state
+    entity_id: input_select.matrix_text_effect
+  action: 
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/text/effect"
+      payload: >
+        {% set num = states('input_select.matrix_text_effect') %}
+        {{ num[1:3] | int }}	 
+
+- alias: Matrix Text Effect Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/effect"
+  action:
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.matrix_text_effect
+      data_template:
+        option: >
+          {% if trigger.payload.strip() == '0' %}
+            [00] - None
+          {% elif trigger.payload.strip() == '1' %}
+            [01] - Flash
+          {% elif trigger.payload.strip() == '2' %}
+            [02] - Flash Alternate
+          {% elif trigger.payload.strip() == '3' %}
+            [03] - Fade In
+          {% elif trigger.payload.strip() == '4' %}
+            [04] - Fade Out
+          {% elif trigger.payload.strip() == '5' %}
+            [05] - Appear
+          {% elif trigger.payload.strip() == '6' %}
+            [06] - Appear Flash
+          {% elif trigger.payload.strip() == '7' %}
+            [07] - Rainbow
+          {% endif %}
+       
+# Speed
+- alias: Matrix Text Speed Set
+  trigger: 
+    platform: state
+    entity_id: input_number.matrix_text_effect_speed
+  action: 
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/speed"
+        payload: "{{ states('input_number.matrix_text_effect_speed') | int }}"
+- alias: Matrix Text Speed Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/speed"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_effect_speed
+      value: "{{ trigger.payload }}"
+# ----------------------
+# Clock Colors
+# -----------------------
+- alias: Matrix Clock Color Red Set
+  trigger: 
+    platform: state
+    entity_id: input_number.matrix_clock_color_red
+  action:
+    - delay: "00:00:01"         #brief delay needed to allow all RGB values to be updated when external changes/clock reboot occurs
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/clock/color"
+        payload: "{{ states('input_number.matrix_clock_color_red') ~ ',' ~ states('input_number.matrix_clock_color_green') ~ ',' ~ states('input_number.matrix_clock_color_blue') }}"
+- alias: Matrix Clock Color Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/clock/color/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_clock_color_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Clock Color Green Set
+  trigger: 
+    platform: state
+    entity_id: input_number.matrix_clock_color_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/clock/color"
+        payload: "{{ states('input_number.matrix_clock_color_red') ~ ',' ~ states('input_number.matrix_clock_color_green') ~ ',' ~ states('input_number.matrix_clock_color_blue') }}"
+- alias: Matrix Clock Color Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/clock/color/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_clock_color_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Clock Color Blue Set
+  trigger: 
+    platform: state
+    entity_id: input_number.matrix_clock_color_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/clock/color"
+        payload: "{{ states('input_number.matrix_clock_color_red') ~ ',' ~ states('input_number.matrix_clock_color_green') ~ ',' ~ states('input_number.matrix_clock_color_blue') }}"
+- alias: Matrix Clock Color Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/clock/color/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_clock_color_blue
+      value: "{{ trigger.payload }}"
+# -----------------------
+# Countdown Colors
+# -----------------------
+# Active
+- alias: Matrix Countdown Color Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_red
+  action:
+    - delay: "00:00:01"         
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/color"
+        payload: "{{ states('input_number.matrix_countdown_color_red') ~ ',' ~ states('input_number.matrix_countdown_color_green') ~ ',' ~ states('input_number.matrix_countdown_color_blue') }}"
+- alias: Matrix Countdown Color Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/color/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_green
+  action:
+    - delay: "00:00:01"         
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/color"
+        payload: "{{ states('input_number.matrix_countdown_color_red') ~ ',' ~ states('input_number.matrix_countdown_color_green') ~ ',' ~ states('input_number.matrix_countdown_color_blue') }}"
+- alias: Matrix Countdown Color Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/color/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/color"
+        payload: "{{ states('input_number.matrix_countdown_color_red') ~ ',' ~ states('input_number.matrix_countdown_color_green') ~ ',' ~ states('input_number.matrix_countdown_color_blue') }}"
+- alias: Matrix Countdown Color Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/color/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_blue
+      value: "{{ trigger.payload }}"
+# Paused
+- alias: Matrix Countdown Color Paused Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_paused_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorpaused"
+        payload: "{{ states('input_number.matrix_countdown_color_paused_red') ~ ',' ~ states('input_number.matrix_countdown_color_paused_green') ~ ',' ~ states('input_number.matrix_countdown_color_paused_blue') }}"
+- alias: Matrix Countdown Color Paused Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorpaused/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_paused_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Paused Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_paused_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorpaused"
+        payload: "{{ states('input_number.matrix_countdown_color_paused_red') ~ ',' ~ states('input_number.matrix_countdown_color_paused_green') ~ ',' ~ states('input_number.matrix_countdown_color_paused_blue') }}"
+- alias: Matrix Countdown Color Paused Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorpaused/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_paused_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Paused Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_paused_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorpaused"
+        payload: "{{ states('input_number.matrix_countdown_color_paused_red') ~ ',' ~ states('input_number.matrix_countdown_color_paused_green') ~ ',' ~ states('input_number.matrix_countdown_color_paused_blue') }}"
+- alias: Matrix Countdown Color Paused Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorpaused/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_paused_blue
+      value: "{{ trigger.payload }}"
+# Final Min
+- alias: Matrix Countdown Color Last Min Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_lastmin_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorfinalmin"
+        payload: "{{ states('input_number.matrix_countdown_color_lastmin_red') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_green') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_blue') }}"
+- alias: Matrix Countdown Color Last Min Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorfinalmin/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_lastmin_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Last Min Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_lastmin_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorfinalmin"
+        payload: "{{ states('input_number.matrix_countdown_color_lastmin_red') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_green') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_blue') }}"
+- alias: Matrix Countdown Color Last Min Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorfinalmin/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_lastmin_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Countdown Color Last Min Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_countdown_color_lastmin_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/colorfinalmin"
+        payload: "{{ states('input_number.matrix_countdown_color_lastmin_red') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_green') ~ ',' ~ states('input_number.matrix_countdown_color_lastmin_blue') }}"
+- alias: Matrix Countdown Color Last Min Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/countdown/colorfinalmin/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_countdown_color_lastmin_blue
+      value: "{{ trigger.payload }}"
+# -----------------------
+# Temperature Colors
+# -----------------------
+- alias: Matrix Temperature Color Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_temperature_color_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/temperature/color"
+        payload: "{{ states('input_number.matrix_temperature_color_red') ~ ',' ~ states('input_number.matrix_temperature_color_green') ~ ',' ~ states('input_number.matrix_temperature_color_blue') }}"
+- alias: Matrix Temperature Color Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/temperature/color/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_temperature_color_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Temperature Color Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_temperature_color_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/temperature/color"
+        payload: "{{ states('input_number.matrix_temperature_color_red') ~ ',' ~ states('input_number.matrix_temperature_color_green') ~ ',' ~ states('input_number.matrix_temperature_color_blue') }}"
+- alias: Matrix Temperature Color Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/temperature/color/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_temperature_color_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Temperature Color Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_temperature_color_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/temperature/color"
+        payload: "{{ states('input_number.matrix_temperature_color_red') ~ ',' ~ states('input_number.matrix_temperature_color_green') ~ ',' ~ states('input_number.matrix_temperature_color_blue') }}"
+- alias: Matrix Temperature Color Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/temperature/color/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_temperature_color_blue
+      value: "{{ trigger.payload }}"
+# -----------------------
+# Scoreboard Colors
+# -----------------------
+# Left
+- alias: Matrix Scoreboard Color Left Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_left_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorleft"
+        payload: "{{ states('input_number.matrix_scoreboard_color_left_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_blue') }}"
+- alias: Matrix Scoreboard Color Left Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorleft/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_left_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Scoreboard Color Left Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_left_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorleft"
+        payload: "{{ states('input_number.matrix_scoreboard_color_left_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_blue') }}"
+- alias: Matrix Scoreboard Color Left Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorleft/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_left_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Scoreboard Color Left Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_left_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorleft"
+        payload: "{{ states('input_number.matrix_scoreboard_color_left_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_left_blue') }}"
+- alias: Matrix Scoreboard Color Left Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorleft/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_left_blue
+      value: "{{ trigger.payload }}"
+# Right
+- alias: Matrix Scoreboard Color Right Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_right_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorright"
+        payload: "{{ states('input_number.matrix_scoreboard_color_right_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_blue') }}"
+- alias: Matrix Scoreboard Color Right Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorright/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_right_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Scoreboard Color Right Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_right_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorright"
+        payload: "{{ states('input_number.matrix_scoreboard_color_right_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_blue') }}"
+- alias: Matrix Scoreboard Color Right Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorright/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_right_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Scoreboard Color Right Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_scoreboard_color_right_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/colorright"
+        payload: "{{ states('input_number.matrix_scoreboard_color_right_red') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_green') ~ ',' ~ states('input_number.matrix_scoreboard_color_right_blue') }}"
+- alias: Matrix Scoreboard Color Right Blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/scoreboard/colorright/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_scoreboard_color_right_blue
+      value: "{{ trigger.payload }}"
+# ============================
+#  Text Colors
+# ============================
+# Top
+- alias: Matrix Text Color Top Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_top_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colortop"
+        payload: "{{ states('input_number.matrix_text_color_top_red') ~ ',' ~ states('input_number.matrix_text_color_top_green') ~ ',' ~ states('input_number.matrix_text_color_top_blue') }}"
+- alias: Matrix Text Color Top Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colortop/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_top_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Text Color Top Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_top_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colortop"
+        payload: "{{ states('input_number.matrix_text_color_top_red') ~ ',' ~ states('input_number.matrix_text_color_top_green') ~ ',' ~ states('input_number.matrix_text_color_top_blue') }}"
+- alias: Matrix Text Color Top Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colortop/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_top_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Text Color Top Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_top_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colortop"
+        payload: "{{ states('input_number.matrix_text_color_top_red') ~ ',' ~ states('input_number.matrix_text_color_top_green') ~ ',' ~ states('input_number.matrix_text_color_top_blue') }}"
+- alias: Matrix Text Color Top blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colortop/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_top_blue
+      value: "{{ trigger.payload }}"
+# Bottom
+- alias: Matrix Text Color Bottom Red Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_bottom_red
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colorbottom"
+        payload: "{{ states('input_number.matrix_text_color_bottom_red') ~ ',' ~ states('input_number.matrix_text_color_bottom_green') ~ ',' ~ states('input_number.matrix_text_color_bottom_blue') }}"
+- alias: Matrix Text Color Bottom Red Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colorbottom/red"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_bottom_red
+      value: "{{ trigger.payload }}"
+- alias: Matrix Text Color Bottom Green Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_bottom_green
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colorbottom"
+        payload: "{{ states('input_number.matrix_text_color_bottom_red') ~ ',' ~ states('input_number.matrix_text_color_bottom_green') ~ ',' ~ states('input_number.matrix_text_color_bottom_blue') }}"
+- alias: Matrix Text Color Bottom Green Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colorbottom/green"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_bottom_green
+      value: "{{ trigger.payload }}"
+- alias: Matrix Text Color Bottom Blue Set
+  trigger:
+    platform: state
+    entity_id: input_number.matrix_text_color_bottom_blue
+  action:
+    - delay: "00:00:01"
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/text/colorbottom"
+        payload: "{{ states('input_number.matrix_text_color_bottom_red') ~ ',' ~ states('input_number.matrix_text_color_bottom_green') ~ ',' ~ states('input_number.matrix_text_color_bottom_blue') }}"
+- alias: Matrix Text Color Bottom blue Get
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/text/colorbottom/blue"
+  action:
+    service: input_number.set_value
+    data:
+      entity_id: input_number.matrix_text_color_bottom_blue
+      value: "{{ trigger.payload }}"
+
+# ============================
+#  External Temperature Update 
+# ============================
+# - Requires NWS integration
+- alias: Matrix Clock External Temp Update  
+  trigger: 
+    platform: state
+    entity_id: sensor.nws_temperature
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/temperature/external"
+      payload: "{{ states('sensor.nws_temperature') | int }}"
+
+# == Called from clock boot process to force MQTT update
+- alias: Matrix Clock External Temp Refresh
+  trigger:
+    platform: mqtt
+    topic: "cmnd/matrix/temperature/refresh"
+  action:
+    service: mqtt.publish
+    data:
+      topic: "cmnd/matrix/temperature/external"
+      payload: "{{ states('sensor.nws_temperature') | int }}"

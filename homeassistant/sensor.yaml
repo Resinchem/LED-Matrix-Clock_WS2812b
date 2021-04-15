@@ -1,0 +1,204 @@
+# =================================
+# Matrix MQTT State Sensors
+# =================================
+  # --------------
+  # Global States
+  # --------------
+  - platform: mqtt
+    name: "Matrix Mode"
+    state_topic: "stat/matrix/mode"
+    icon: mdi:clock-digitial
+  - platform: mqtt
+    name: "Matrix Brightness"
+    state_topic: "stat/matrix/brightness"
+    icon: mdi:brightness-5
+  # --------------
+  # Clock
+  # --------------
+  - platform: mqtt
+    name: "Matrix Time Display"
+    state_topic: "stat/matrix/clock/display"
+    icon: mdi:clock-time-four-outline
+  # ----------------
+  # Countdown Timer
+  # -----------------
+  # Starting Time
+  - platform: mqtt
+    name: "Matrix Countdown Start Time"
+    state_topic: "stat/matrix/countdown/starttime"
+    icon: mdi:timer-outline
+  # Running Status
+  - platform: mqtt
+    name: "Matrix Countdown Run Status"
+    state_topic: "stat/matrix/countdown/status"
+    icon: mdi:run
+  # -------------
+  # Temperature
+  # -------------
+  # Display type (°C or °F)
+  - platform: mqtt
+    name: "Matrix Temperature Display"
+    state_topic: "stat/matrix/temperature/symbol"
+    icon: mdi:cogs
+  # Correction value
+  - platform: mqtt
+    name: "Matrix Temperature Correction"
+    state_topic: "stat/matrix/temperature/correction"
+    icon: mdi:compare-vertical
+  # Reported Temperature (after correction applied)
+  - platform: mqtt
+    name: "Matrix Temperature Measured"
+    state_topic: "stat/matrix/temperature"
+    unit_of_measurement: "°"
+    icon: mdi:thermometer
+  # -----------------
+  # Scoreboard
+  # -----------------
+  # Score Left
+  - platform: mqtt
+    name: "Matrix Scoreboard Score Left"
+    state_topic: "stat/matrix/scoreboard/scoreleft"
+    icon: mdi:alpha-v-box-outline
+  # Score Right
+  - platform: mqtt
+    name: "Matrix Scoreboard Score Right"
+    state_topic: "stat/matrix/scoreboard/scoreright"
+    icon: mdi:alpha-h-box-outline
+  # ------------------------------------------------------
+  # Color states, as individual red, green and blue values
+  # ------------------------------------------------------
+  # Clock color
+  - platform: mqtt
+    name: "Matrix Clock Color Val Red"
+    state_topic: "stat/matrix/clock/color/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Clock Color Val Green"
+    state_topic: "stat/matrix/clock/color/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Clock Color Val Blue"
+    state_topic: "stat/matrix/clock/color/blue"
+    icon: mdi:palette
+  # Countdown Colors
+  - platform: mqtt
+    name: "Matrix Countdown Color Val Red"
+    state_topic: "stat/matrix/countdown/color/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Val Green"
+    state_topic: "stat/matrix/countdown/color/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Val Blue"
+    state_topic: "stat/matrix/countdown/color/blue"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Final Min Val Red"
+    state_topic: "stat/matrix/countdown/colorfinalmin/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Final Min Val Green"
+    state_topic: "stat/matrix/countdown/colorfinalmin/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Final Min Val Blue"
+    state_topic: "stat/matrix/countdown/colorfinalmin/blue"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Paused Val Red"
+    state_topic: "stat/matrix/countdown/colorpaused/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Paused Val Green"
+    state_topic: "stat/matrix/countdown/colorpaused/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Countdown Color Paused Val Blue"
+    state_topic: "stat/matrix/countdown/colorpaused/blue"
+    icon: mdi:palette
+  # Temperature Color
+  - platform: mqtt
+    name: "Matrix Temperature Color Val Red"
+    state_topic: "stat/matrix/temperature/color/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Temperature Color Val Green"
+    state_topic: "stat/matrix/temperature/color/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Temperature Color Val Blue"
+    state_topic: "stat/matrix/temperature/color/blue"
+    icon: mdi:palette
+  # Scoreboard Colors
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Left Val Red"
+    state_topic: "stat/matrix/scoreboard/colorleft/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Left Val Green"
+    state_topic: "stat/matrix/scoreboard/colorleft/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Left Val Blue"
+    state_topic: "stat/matrix/scoreboard/colorleft/blue"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Right Val Red"
+    state_topic: "stat/matrix/scoreboard/colorright/red"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Right Val Green"
+    state_topic: "stat/matrix/scoreboard/colorright/green"
+    icon: mdi:palette
+  - platform: mqtt
+    name: "Matrix Scoreboard Color Right Val Blue"
+    state_topic: "stat/matrix/scoreboard/colorright/blue"
+    icon: mdi:palette
+
+  # ----------------------------------------------------
+  # Color states returned as single RGB value: (r, g, b)
+  # ----------------------------------------------------
+  - platform: template
+    sensors:
+      matrix_color_rgb:
+        friendly_name: "Matrix Clock RGB Color"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_clock_color_val_red')) ~ ', ' ~ (states('sensor.matrix_clock_color_val_green')) ~ ', ' ~ (states('sensor.matrix_clock_color_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_countdown_color_rgb:
+        friendly_name: "Matrix Countdown RGB Color"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_countdown_color_val_red')) ~ ', ' ~ (states('sensor.matrix_countdown_color_val_green')) ~ ', ' ~ (states('sensor.matrix_countdown_color_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_countdown_color_final_min_rgb:
+        friendly_name: "Matrix Countdown Final Min RGB Color"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_countdown_color_final_min_val_red')) ~ ', ' ~ (states('sensor.matrix_countdown_color_final_min_val_green')) ~ ', ' ~ (states('sensor.matrix_countdown_color_final_min_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_countdown_color_paused_rgb:
+        friendly_name: "Matrix Countdown Paused RGB Color"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_countdown_color_paused_val_red')) ~ ', ' ~ (states('sensor.matrix_countdown_color_paused_val_green')) ~ ', ' ~ (states('sensor.matrix_countdown_color_paused_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_temperature_color_rgb:
+        friendly_name: "Matrix Temperature RGB Color"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_temperature_color_val_red')) ~ ', ' ~ (states('sensor.matrix_temperature_color_val_green')) ~ ', ' ~ (states('sensor.matrix_temperature_color_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_scoreboard_color_left_rgb:
+        friendly_name: "Matrix Scoreboard RGB Color Left"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_scoreboard_color_left_val_red')) ~ ', ' ~ (states('sensor.matrix_scoreboard_color_left_val_green')) ~ ', ' ~ (states('sensor.matrix_scoreboard_color_left_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette
+
+      matrix_scoreboard_color_right_rgb:
+        friendly_name: "Matrix Scoreboard RGB Color Right"
+        value_template: >
+          "{{ '(' ~ (states('sensor.matrix_scoreboard_color_right_val_red')) ~ ', ' ~ (states('sensor.matrix_scoreboard_color_right_val_green')) ~ ', ' ~ (states('sensor.matrix_scoreboard_color_right_val_blue')) ~ ')'}}"
+        icon_template: mdi:palette

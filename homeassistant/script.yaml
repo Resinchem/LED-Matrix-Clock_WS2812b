@@ -1,0 +1,102 @@
+# =================================================
+#  Scripts for controlling/publishing to Matrix
+# =================================================
+# Clock
+# -------------
+# Load system time to input text for setting clock time
+matrix_load_systime:
+  alias: 'Load system time'
+  sequence:
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.matrix_time_load
+        value: "{{ states('sensor.matrix_settime') }}"
+# Push time to clock
+matrix_upload_time:
+  alias: 'Update Clock Time'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: 'cmnd/matrix/clock/settime'
+        payload_template: "{{ states('input_text.matrix_time_load') }}"
+
+# ------------------------
+# Countdown
+# ------------------------
+matrix_countdown_reset:
+  alias: 'Reset Countdown'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/action"
+        payload: "2"
+matrix_countdown_clear:
+  alias: 'Clear Countdown Start Time'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/countdown/action"
+        payload: "3"
+# -----------------------
+# Buzzer
+# -----------------------
+# Length is in milliseconds (1000 = 1 sec)
+matrix_buzzer_sound:
+  alias: 'Sound Matrix Buzzer'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/buzzer"
+        payload: "2000"
+# -----------------------
+# Scoreboard
+# -----------------------
+matrix_scoreboard_left_up:
+  alias: 'Increase Left Score'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/scoreup"
+        payload: "0"
+matrix_scoreboard_right_up:
+  alias: 'Increase Right Score'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/scoreup"
+        payload: "1"
+matrix_scoreboard_left_down:
+  alias: 'Decrease Left Score'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/scoredown"
+        payload: "0"
+matrix_scoreboard_right_down:
+  alias: 'Decrease Right Score'
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/scoredown"
+        payload: "1"
+matrix_scoreboard_left_reset:
+  alias: 'Reset Left Score'
+  sequence: 
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/reset"
+        payload: "0"
+matrix_scoreboard_right_reset:
+  alias: 'Reset Right Score'
+  sequence: 
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/reset"
+        payload: "1"
+matrix_scoreboard_reset:
+  alias: 'Reset Both Scores'
+  sequence: 
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/matrix/scoreboard/reset"
+        payload: "2"

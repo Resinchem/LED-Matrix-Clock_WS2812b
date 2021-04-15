@@ -1,0 +1,422 @@
+ - title: Matrix
+    path: matrix
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - text: LED Matrix
+            type: 'custom:text-divider-row'
+          - cards:
+              - aspect_ratio: 1.2/1
+                color: 'rgb(0,255,158)'
+                color_type: card
+                entity: switch.matrix_mode_clock
+                icon: 'mdi:clock-outline'
+                name: Clock
+                tap_action:
+                  action: toggle
+                type: 'custom:button-card'
+              - aspect_ratio: 1.2/1
+                color: 'rgb(0,255,158)'
+                color_type: card
+                entity: switch.matrix_mode_countdown
+                icon: 'mdi:timer-outline'
+                name: Countdown
+                tap_action:
+                  action: toggle
+                type: 'custom:button-card'
+              - aspect_ratio: 1.2/1
+                color: 'rgb(0,255,158)'
+                color_type: card
+                entity: switch.matrix_mode_scoreboard
+                icon: 'mdi:basketball-hoop-outline'
+                name: Scoreboard
+                tap_action:
+                  action: toggle
+                type: 'custom:button-card'
+              - aspect_ratio: 1.2/1
+                color: 'rgb(0,255,158)'
+                color_type: card
+                entity: switch.matrix_mode_text
+                icon: 'mdi:format-text-variant-outline'
+                name: Text
+                tap_action:
+                  action: toggle
+                type: 'custom:button-card'
+            type: horizontal-stack
+          - type: entities
+            entities:
+              - entity: input_number.matrix_brightness
+                name: Brightness
+                icon: 'mdi:brightness-5'
+              - entity: input_select.matrix_number_font
+                icon: 'mdi:format-font'
+              - entity: input_boolean.matrix_auto_dim
+                name: Auto-Dimming
+              - entity: input_boolean.matrix_sync_led_clock
+                name: Sync Actions to LED Clock
+            show_header_toggle: false
+          - type: horizontal-stack
+            cards:
+              - type: 'custom:button-card'
+                aspect-ratio: 2/1
+                name: Sound Buzzer
+                show_icon: true
+                show_name: true
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: script.matrix_buzzer_sound
+      - type: vertical-stack
+        cards:
+          - type: conditional
+            conditions:
+              - entity: switch.matrix_mode_clock
+                state: 'on'
+            card:
+              type: vertical-stack
+              cards:
+                - type: 'custom:text-divider-row'
+                  text: Clock Options
+                - type: horizontal-stack
+                  cards:
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: 12-Hour Display
+                      color_type: card
+                      color: 'rgb(128,0,128)'
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      entity: switch.matrix_display_12_hour
+                      tap_action:
+                        action: toggle
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: 24-Hour Display
+                      color_type: card
+                      color: 'rgb(128,0,128)'
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      entity: switch.matrix_display_24_hour
+                      tap_action:
+                        action: toggle
+                - type: entities
+                  entities:
+                    - entity: input_text.matrix_time_load
+                      name: 'Set Clock Date/Time To:'
+                      icon: 'mdi:clock-outline'
+                - type: horizontal-stack
+                  cards:
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: Load System Time
+                      show_icon: true
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_load_systime
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: Update Clock Time
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_upload_time
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_clock_color_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_clock_color_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_clock_color_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Clock Color
+                  state_color: false
+                  show_header_toggle: false
+                - type: 'custom:text-divider-row'
+                  text: Temperature Options
+                - type: entity
+                  entity: sensor.matrix_temperature_measured
+                  name: Current Temperature
+                  unit: °
+                - type: horizontal-stack
+                  cards:
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: °F
+                      color_type: card
+                      color: 'rgb(66, 108, 255)'
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      entity: switch.matrix_temp_display_f
+                      tap_action:
+                        action: toggle
+                    - type: 'custom:button-card'
+                      aspect-ratio: 2/1
+                      name: °C
+                      color_type: card
+                      color: 'rgb(66, 108, 255)'
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      entity: switch.matrix_temp_display_c
+                      tap_action:
+                        action: toggle
+                - type: entities
+                  entities:
+                    - entity: input_text.matrix_temperature_correction
+                      icon: 'mdi:thermometer-minus'
+                  show_header_toggle: false
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_temperature_color_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_temperature_color_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_temperature_color_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Temperature Color
+                  show_header_toggle: false
+          - type: conditional
+            conditions:
+              - entity: sensor.matrix_mode
+                state: Countdown
+            card:
+              type: vertical-stack
+              cards:
+                - type: 'custom:text-divider-row'
+                  text: Countdown Options
+                - type: entities
+                  entities:
+                    - entity: input_text.matrix_countdown_start_time
+                      name: 'Start time (hh:mm:ss):'
+                      icon: 'mdi:timer-outline'
+                - type: horizontal-stack
+                  cards:
+                    - aspect_ratio: 2/1
+                      color: 'rgb(0,255,0)'
+                      color_type: card
+                      entity: switch.matrix_countdown_running
+                      icon: 'mdi:timer-outline'
+                      name: Start
+                      tap_action:
+                        action: toggle
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      color: 'rgb(255,0,0)'
+                      color_type: card
+                      entity: switch.matrix_countdown_stopped
+                      icon: 'mdi:timer-off-outline'
+                      name: Stop/Pause
+                      tap_action:
+                        action: toggle
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:autorenew'
+                      name: Reset
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_countdown_reset
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:numeric-0-box-outline'
+                      name: Clear
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_countdown_clear
+                      type: 'custom:button-card'
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_countdown_color_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_countdown_color_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_countdown_color_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Countdown Active Color
+                  show_header_toggle: false
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_countdown_color_paused_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_countdown_color_paused_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_countdown_color_paused_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  show_header_toggle: false
+                  title: Countdown Paused Color
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_countdown_color_lastmin_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_countdown_color_lastmin_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_countdown_color_lastmin_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Countdown Final Minute Color
+                  show_header_toggle: false
+          - type: conditional
+            conditions:
+              - entity: sensor.matrix_mode
+                state: Scoreboard
+            card:
+              type: vertical-stack
+              cards:
+                - type: 'custom:text-divider-row'
+                  text: Scoreboard Options
+                - type: horizontal-stack
+                  cards:
+                    - type: entities
+                      entities:
+                        - entity: input_text.matrix_scoreboard_team_left
+                          name: Team
+                          icon: 'mdi:alpha-v-circle-outline'
+                    - type: entities
+                      entities:
+                        - entity: input_text.matrix_scoreboard_team_right
+                          name: Team
+                          icon: 'mdi:alpha-h-circle-outline'
+                - type: horizontal-stack
+                  cards:
+                    - type: entity
+                      entity: sensor.matrix_scoreboard_score_left
+                      name: Visitors (left)
+                      icon: ' '
+                    - type: entity
+                      entity: sensor.matrix_scoreboard_score_right
+                      name: Home (right)
+                      icon: ' '
+                - type: horizontal-stack
+                  cards:
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:minus'
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_left_down
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:plus'
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_left_up
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:minus'
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_right_down
+                      type: 'custom:button-card'
+                    - aspect_ratio: 2/1
+                      icon: 'mdi:plus'
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_right_up
+                      type: 'custom:button-card'
+                - type: horizontal-stack
+                  cards:
+                    - aspect_ratio: 3/1
+                      name: Reset Vistors
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_left_reset
+                      type: 'custom:button-card'
+                    - aspect_ratio: 3/1
+                      name: Reset All
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_reset
+                      type: 'custom:button-card'
+                    - aspect_ratio: 3/1
+                      name: Reset Home
+                      tap_action:
+                        action: call-service
+                        service: script.matrix_scoreboard_right_reset
+                      type: 'custom:button-card'
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_scoreboard_color_left_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_scoreboard_color_left_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_scoreboard_color_left_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Color Visitors (left)
+                  show_header_toggle: false
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_scoreboard_color_right_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_scoreboard_color_right_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_scoreboard_color_right_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Color Home (right)
+                  show_header_toggle: false
+          - type: conditional
+            conditions:
+              - entity: sensor.matrix_mode
+                state: Text
+            card:
+              type: vertical-stack
+              cards:
+                - type: 'custom:text-divider-row'
+                  text: Text Mode Options
+                - type: entities
+                  entities:
+                    - entity: input_text.matrix_text_message
+                      name: 'Text to Display:'
+                      icon: 'mdi:format-text-variant-outline'
+                - type: entities
+                  entities:
+                    - entity: input_select.matrix_text_effect
+                    - entity: input_number.matrix_text_effect_speed
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_text_color_top_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_text_color_top_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_text_color_top_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Text Color (Top Row)
+                  show_header_toggle: false
+                - type: entities
+                  entities:
+                    - entity: input_number.matrix_text_color_bottom_red
+                      name: Red
+                      icon: 'mdi:alpha-r-circle'
+                    - entity: input_number.matrix_text_color_bottom_green
+                      name: Green
+                      icon: 'mdi:alpha-g-circle'
+                    - entity: input_number.matrix_text_color_bottom_blue
+                      name: Blue
+                      icon: 'mdi:alpha-b-circle'
+                  title: Text Color (Bottom Row)
+                  show_header_toggle: false

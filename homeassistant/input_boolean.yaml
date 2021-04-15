@@ -1,0 +1,7 @@
+# ================
+#  Matrix Auto-Dim
+# ================
+matrix_auto_dim:
+  name: Matrix Auto-Dim
+  initial: on
+  icon: mdi:brightness-auto

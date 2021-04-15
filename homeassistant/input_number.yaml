@@ -1,0 +1,182 @@
+# ==========================================================
+#  Matrix Brightness and Color and Text Effect Speed Sliders
+# ==========================================================
+# Matrix Brightness:
+matrix_brightness:
+  name: Brightness
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+# Matrix Clock Colors (R, G, B)
+matrix_clock_color_red:
+  name: Clock Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_clock_color_green:
+  name: Clock Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_clock_color_blue:
+  name: Clock Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+# Matrix Countdown Color
+matrix_countdown_color_red:
+  name: Countdown Active Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_green:
+  name: Countdown Active Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_blue:
+  name: Countdown Active Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_paused_red:
+  name: Countdown Paused Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_paused_green:
+  name: Countdown Paused Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_paused_blue:
+  name: Countdown Paused Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_lastmin_red:
+  name: Countdown Last Minute Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_lastmin_green:
+  name: Countdown Last Minute Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_countdown_color_lastmin_blue:
+  name: Countdown Last Minute Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+# Matrix Temperature Color
+matrix_temperature_color_red:
+  name: Temperature Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_temperature_color_green:
+  name: Temperature Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_temperature_color_blue:
+  name: Temperature Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+# Matrix Scoreboard Colors
+matrix_scoreboard_color_left_red:
+  name: Scoreboard Left Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_scoreboard_color_left_green:
+  name: Scoreboard Left Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_scoreboard_color_left_blue:
+  name: Scoreboard Left Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_scoreboard_color_right_red:
+  name: Scoreboard Right Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_scoreboard_color_right_green:
+  name: Scoreboard Right Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_scoreboard_color_right_blue:
+  name: Scoreboard Right Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_top_red:
+  name: Text Top Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_top_green:
+  name: Text Top Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_top_blue:
+  name: Text Top Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_bottom_red:
+  name: Text Bottom Color Red
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_bottom_green:
+  name: Text Bottom Color Green
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_color_bottom_blue:
+  name: Text Bottom Color Blue
+  min: 0
+  max: 255
+  step: 1
+  mode: slider
+matrix_text_effect_speed:
+  name: Text Effect Speed
+  min: 1
+  max: 10
+  step: 1
+  mode: slider
