@@ -1,6 +1,6 @@
 # MQTT Topic Commands and States
 
-### MQTT use is technically optional, but many features can only be used via MQTT
+### MQTT use is technically optional, but many features (such as text mode) can only be used via MQTT
 
 See the MQTT PAGE of the wiki for additional information.
 
