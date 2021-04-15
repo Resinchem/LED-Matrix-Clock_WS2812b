@@ -1,5 +1,5 @@
 # ====================================
-# Brighness and Color Slider Processes
+# Brighness and Color Slider Processes  
 #  ...Set: publishes value when slider changes
 #  ---Get: updates slider when MQTT changes
 # ====================================
