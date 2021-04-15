@@ -15,3 +15,6 @@ Updated version of the original 3D LED Clock, countdown timer, scoreboard and ne
 
 (While basic functionality can be controlled via local buttons or the built-in web server, most of the advanced features including the text display mode requires a properly configured MQTT broker).
 
+### Full build details can be viewed at [Resinchem Tech Blog](https://resinchemtech.blogspot.com/2021/04/ws2812b-led-matrix-clock-scoreboard-and.html) 
+
+#### Details on installation, configuration, settings and other options can be found on the wiki.
