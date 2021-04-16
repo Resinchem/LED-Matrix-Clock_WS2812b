@@ -1,4 +1,4 @@
-// Setting.h version 0.51
+// Setting.h version 0.52
 // ===============================================================================
 // Update these values to match your build and board type if not using D1 Mini
 #define NUM_LEDS 400                           // Total of 400 LED's if matrix built as shown    
@@ -11,11 +11,11 @@
 // Optional pushbuttons (colors listed match ones used in build instructions)
 // All pins need to be LOW when button open or code modifications will be required in main sketch
 #define DATA_PIN D6                           // Change this if you are using another type of ESP board than a WeMos D1 Mini
-#define MODE_PIN D3                           // Push button (white): Change Mode
-#define V1_PIN D4                             // Push button (red): Visitor+/Minutes Add button
-#define V0_PIN 3                              // Push button (green): Visitor-/Seconds Add button (RX pin)
-#define H1_PIN D7                             // Push button (yellow): Home+/Countdown start button
-#define H0_PIN 1                              // Push button (blue): Home-/Countdown stop/pause button (TX pin)
+#define MODE_PIN D3                           // Push button: - not used -
+#define V1_PIN D4                             // Push button: - not used -
+#define V0_PIN 3                              // Push button (blue): Mode button (RX pin)
+#define H1_PIN D7                             // Push button (green): Visitor+/Countdown start/stop button
+#define H0_PIN 1                              // Push button (red): Home+/Countdown reset button (TX pin)
 // Default state topic prefix: stat/matrix
 // Default command topci prefix: cmnd/matrix
 // ---------------------------------------------------------------------------------------------------------------

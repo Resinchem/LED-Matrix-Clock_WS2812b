@@ -1,7 +1,7 @@
 /*
- * VERSION 0.51
- * April 2, 2021
- * Text and team names MQTT publish, Text Effects
+ * VERSION 0.52
+ * April 16, 2021
+ * Fix button colors / functions
  * By ResinChem Tech - licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 */
 #include <Wire.h>
@@ -304,11 +304,11 @@ void setup() {
   pinMode(3, FUNCTION_3);
   pinMode(1, FUNCTION_3);
   pinMode(COUNTDOWN_OUTPUT, OUTPUT);
-  pinMode(MODE_PIN, INPUT_PULLUP);
-  pinMode(V1_PIN, INPUT_PULLUP);
-  pinMode(V0_PIN, INPUT_PULLUP);
-  pinMode(H1_PIN, INPUT_PULLUP);
-  pinMode(H0_PIN, INPUT_PULLUP);
+  pinMode(MODE_PIN, INPUT_PULLUP);	//not used
+  pinMode(V1_PIN, INPUT_PULLUP);    //not used
+  pinMode(V0_PIN, INPUT_PULLUP);	//Blue
+  pinMode(H1_PIN, INPUT_PULLUP);	//Green
+  pinMode(H0_PIN, INPUT_PULLUP);    //Red
   delay(200);
 
   // RTC DS3231 Setup
@@ -936,11 +936,11 @@ void loop() {
     }
   }
 
-  int modeReading = digitalRead(V0_PIN);  //Green
-  int v1Reading = digitalRead(H1_PIN);    //Yellow
-  int h1_Reading = digitalRead(H0_PIN);   //Blue
+  int modeReading = digitalRead(V0_PIN);  //Blue
+  int v1Reading = digitalRead(H1_PIN);    //Green
+  int h1_Reading = digitalRead(H0_PIN);   //Red
 
-  // Mode Button (Green)
+  // Mode Button (Blue)
   if (modeReading == LOW) { 
     clockMode = clockMode + 1; 
     delay(500);
@@ -950,7 +950,7 @@ void loop() {
     tempUpdateCount = 0;
   }
 
-//V+ Button (Yellow): Increase visitor score / Toggle timer (run/stop)
+//V+ Button (Green): Increase visitor score / Toggle timer (run/stop)
   if (v1Reading == LOW && h1_Reading == !LOW) {
     if (clockMode == 2) {
       scoreboardLeft = scoreboardLeft + 1;
@@ -974,7 +974,7 @@ void loop() {
     }
     delay(500);
   }
-  //H+ Button (Blue): Increase home score / Reset timer to starting value
+  //H+ Button (Red): Increase home score / Reset timer to starting value
   if (h1_Reading == LOW && v1Reading == !LOW) {
     if (clockMode == 2) {
       scoreboardRight = scoreboardRight + 1;
@@ -1001,7 +1001,7 @@ void loop() {
     delay(500);
   }
 
-  //V+ and H+ buttons (yellow + blue): Reset scoreboard scores / clear starting time
+  //V+ and H+ buttons (green + red): Reset scoreboard scores / clear starting time
    if (v1Reading == LOW && h1_Reading == LOW) {
      if (clockMode == 2) {
        scoreboardLeft = 0;
