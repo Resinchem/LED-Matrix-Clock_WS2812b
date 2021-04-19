@@ -17,4 +17,4 @@ Updated version of the original 3D LED Clock, countdown timer, scoreboard and ne
 
 ### Full build details can be viewed at [Resinchem Tech Blog](https://resinchemtech.blogspot.com/2021/04/ws2812b-led-matrix-clock-scoreboard-and.html) 
 
-#### Details on installation, configuration, settings and other options can be found on the wiki.
+### Details on installation, configuration, settings and other options can be found on the [wiki](https://github.com/Resinchem/LED-Matrix-Clock_WS2812b/wiki).
