@@ -1,7 +1,9 @@
 /*
- * VERSION 0.52
- * April 16, 2021
- * Fix button colors / functions
+ * VERSION 0.53
+ * August 7, 2022
+ * Adds time sync upon initial boot
+ * Adds new button press options: Next text effect (green), clear notifications (red)
+ * Fix missing mqttConnected = true in main loop MQTT reconnect
  * By ResinChem Tech - licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
 */
 #include <Wire.h>
@@ -304,11 +306,11 @@ void setup() {
   pinMode(3, FUNCTION_3);
   pinMode(1, FUNCTION_3);
   pinMode(COUNTDOWN_OUTPUT, OUTPUT);
-  pinMode(MODE_PIN, INPUT_PULLUP);	//not used
-  pinMode(V1_PIN, INPUT_PULLUP);    //not used
-  pinMode(V0_PIN, INPUT_PULLUP);	//Blue
-  pinMode(H1_PIN, INPUT_PULLUP);	//Green
-  pinMode(H0_PIN, INPUT_PULLUP);    //Red
+  pinMode(MODE_PIN, INPUT_PULLUP); //not used
+  pinMode(V1_PIN, INPUT_PULLUP);   //not used
+  pinMode(V0_PIN, INPUT_PULLUP);   //Blue
+  pinMode(H1_PIN, INPUT_PULLUP);   //Green
+  pinMode(H0_PIN, INPUT_PULLUP);   //Red
   delay(200);
 
   // RTC DS3231 Setup
@@ -443,6 +445,10 @@ void setup() {
     updateMqttColor(8, textColorBottom.r, textColorBottom.g, textColorBottom.b);
     //Reset clock mode in case any MQTT updates changed it
     clockMode = 0;
+    //v 0.53 Request current time in case this is a cold boot. Automation system (e.g Home Assistant/NodeRed) should handle call and send/set current date/time via MQTT call
+    if (autoSetTimeOnBoot) {
+      updateMQTTTime();
+    }
   }
   // Handlers
   server.on("/color", HTTP_POST, []() {    
@@ -928,6 +934,7 @@ void loop() {
         // Attempt to reconnect
         if (reconnect()) {
           lastReconnectAttempt = 0;
+          mqttConnected = true;
         }
       }
     } else {
@@ -950,7 +957,7 @@ void loop() {
     tempUpdateCount = 0;
   }
 
-//V+ Button (Green): Increase visitor score / Toggle timer (run/stop)
+//V+ Button (Green): Increase visitor score / Toggle timer (run/stop) / Next text effect
   if (v1Reading == LOW && h1_Reading == !LOW) {
     if (clockMode == 2) {
       scoreboardLeft = scoreboardLeft + 1;
@@ -971,10 +978,16 @@ void loop() {
       }  
       if (mqttConnected)
         updateMqttCountdownStatus(timerRunning);
+    } else if (clockMode == 3) {
+       textEffect = textEffect + 1;
+       if (textEffect > 7) {
+         textEffect = 0;
+         oldTextEffect = textEffect; 
+       }
     }
     delay(500);
   }
-  //H+ Button (Red): Increase home score / Reset timer to starting value
+  //H+ Button (Red): Increase home score / Reset timer to starting value / Clear notification (e.g. YouTube)
   if (h1_Reading == LOW && v1Reading == !LOW) {
     if (clockMode == 2) {
       scoreboardRight = scoreboardRight + 1;
@@ -997,6 +1010,12 @@ void loop() {
           updateMqttCountdownAction(1);
         }
       }
+    } else if (clockMode == 3) {
+      textEffect = 0;
+      oldTextEffect = 0;
+      allBlank();
+      tempUpdateCount = 0;
+      clockMode = 0;
     }
     delay(500);
   }
@@ -1738,6 +1757,12 @@ void updateMqttMode() {
       client.publish("stat/matrix/mode", "Text", true);
       break;
   }
+}
+
+void updateMQTTTime () {
+  // v0.53 - sends MQTT request to get time from local MQTT system (or other automation source)
+  // Receiving system should send MQTT command back with current date-time (see MQTT commands for format)
+  client.publish("stat/matrix/clock/requesttime", "1", true);
 }
 
 void updateMqttBrightness(unsigned int bright_val) {

@@ -1,4 +1,4 @@
-// Setting.h version 0.52
+// Setting.h version 0.53
 // ===============================================================================
 // Update these values to match your build and board type if not using D1 Mini
 #define NUM_LEDS 400                           // Total of 400 LED's if matrix built as shown    
@@ -35,7 +35,8 @@ byte scoreboardRight = 0;                       // Starting "Home" (right) score
 String scoreboardTeamLeft = "&V&";             // Default visitor (left) team name on scoreboard
 String scoreboardTeamRight = "&H&";            // Default home (right) team name on scoreboard
 byte textEffect = 0;                           // Text effect to supply (0 = none, see documentation for others)
-byte textEffectSpeed = 1;                      // 1 = slow (1 sec) to max of 10 (.1 second)
+byte textEffectSpeed = 5;                      // 1 = slow (1 sec) to max of 10 (.1 second)
+bool autoSetTimeOnBoot = true;                 // v0.53: Make MQTT call to request current time on boot - call must be handled via automation system (e.g. Home Assistant, NodeRed, etc.)
 
 // Default starting colors for modes
 // Named colors can be used.  Valid values found at: http://fastled.io/docs/3.1/struct_c_r_g_b.html
