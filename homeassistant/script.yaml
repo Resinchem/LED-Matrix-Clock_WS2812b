@@ -20,6 +20,14 @@ matrix_upload_time:
         topic: 'cmnd/matrix/clock/settime'
         payload_template: "{{ states('input_text.matrix_time_load') }}"
 
+# Immediately sync time from local system - can be called from automaion, button, etc.
+matrix_sync_time:
+  alias: 'Matrix Sync Time'
+  sequence: 
+    - service: mqtt.publish
+      data:
+        topic: 'cmnd/matrix/clock/settime'
+        payload_template: "{{ as_timestamp(now()) | timestamp_custom('%b %d %Y;%H:%M:%S') }}"
 # ------------------------
 # Countdown
 # ------------------------

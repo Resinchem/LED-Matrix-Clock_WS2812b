@@ -1,3 +1,25 @@
+# ===================================
+#  Matrix Auto-Update Time on Boot
+# ===================================
+#  This is available on matrix releases 0.53 and later
+#  It will auto-set the clock with the Home Assistant server time
+#  upon booting of the matrix
+- alias: Matrix Auto Update Time
+  trigger:
+    platform: mqtt
+    topic: "stat/matrix/clock/requesttime"
+    payload: "1"
+  action:
+    - service: mqtt.publish
+      data:
+        topic: 'cmnd/matrix/clock/settime'
+        payload_template: "{{ as_timestamp(now()) | timestamp_custom('%b %d %Y;%H:%M:%S') }}"
+    # Reset request topic
+    - service: mqtt.publish
+      data:
+        topic: "stat/matrix/clock/requesttime"
+        payload: "0"
+
 # ====================================
 # Brighness and Color Slider Processes  
 #  ...Set: publishes value when slider changes
