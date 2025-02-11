@@ -2,6 +2,8 @@
 
 ![all_modes](https://user-images.githubusercontent.com/55962781/113493423-2a029f00-94ad-11eb-8f39-43af33dc5daa.jpg)
 
+**NOTE**: A newer ESP32-based version with more features that does not require Home Assistant can be found here: [MatrixClock ESP-32](https://github.com/Resinchem/Matrix-Clock-ESP32)
+
 Updated version of the original 3D LED Clock, countdown timer, scoreboard and new text display mode, using 400 WS2811b pixels.
 
 ## Key Features:
